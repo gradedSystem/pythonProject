@@ -7,7 +7,6 @@ def main():
     contents = text.read().replace(" ", "").upper()
     contents = [character for character in contents if character.isalnum()]
     contents = "".join(contents)
-    print(contents.count('A'))
     d = {}
     for i in range(65, 90):
         val = round(contents.count(chr(i))/len(contents),3)
