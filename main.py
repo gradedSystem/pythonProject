@@ -1,4 +1,3 @@
-import string
 def main():
     # Read the text
     text = open('Text.txt', 'r')
