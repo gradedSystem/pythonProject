@@ -65,6 +65,14 @@ class Huffman_algo:
 
 
 def main():
+    
+    def merge(d1, d2):
+        d3 = {**d1,**d2}
+        for key, index in d3.items():
+            if key in d1 and key in d2:
+                   d3[key] = [index, d1[key]]
+        return d3
+    
     # Read the text
     text = open('Text.txt', 'r')
 
@@ -82,14 +90,26 @@ def main():
         if key == ' ':
             d['space'] = d.pop(' ')
         print(key + " - " + str(index))"""
-    print(d)
+    #print(d)
     text = ""
     for i in d:
         text += i
     temp = Huffman_algo()
     temp.initialize(d)
     print(temp.print_bytes(text))
-    print(temp.dict)
+    #print(temp.dict)
+    
+    sab = temp.dict
+    final = merge(sab, d)
+    
+    for key, index in sorted(final.items(), key=lambda item: item[1], reverse=True):
+        if key == '\n':
+            final['newspace'] = final.pop('\n')
+        if key == '\t':
+            final['tab'] = final.pop('\t')
+        if key == ' ':
+            final['space'] = final.pop(' ')
+        print(key + " - " + str(index))
 
 
 if __name__ == '__main__':
