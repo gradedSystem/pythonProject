@@ -1,5 +1,4 @@
 import heapq
-import zlib
 
 class Node:
     def __init__(self, character, frequency):
