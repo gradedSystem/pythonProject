@@ -110,11 +110,10 @@ def main():
         if key == ' ':
             final['space'] = final.pop(' ')
         print(key + " - " + str(index))
-        
-print('Number of bits in the original text: '+str(len(contents.encode('utf-8')))+' bytes')
-compressed = zlib.compress(contents.encode('utf-8'))
-print('Number of bits in the compressed text: '+str(len(compressed))+' bytes')
-print('Compression ratio = '+str(len(contents.encode('utf-8'))/len(compressed))+' bytes')
+       
+    print('Number of bits in the original text: '+str(len(contents.encode('utf-8')))+' bytes')
+    print('Number of bits in the compressed text: '+str(len(temp.print_bytes(text)))+' bytes')             
+    print('Compression ratio = '+str(len(contents.encode('utf-8'))/len(temp.print_bytes(text)))+' bytes')
 
 
 if __name__ == '__main__':
