@@ -1,4 +1,6 @@
 import heapq
+from heapq import heappop, heappush
+
 # heapq is default library for heatmaps
 
 Node_Value_1 = []
@@ -29,6 +31,7 @@ class Huffman_algo:
     def __init__(self):
         self.heap = []
         self.dict = {}
+        self.reverse_mapping = {}
 
     def initialize(self, val):
         for ind, key in val.items():
@@ -59,6 +62,7 @@ class Huffman_algo:
 
         if item.character is not None:
             self.dict[item.character] = node
+            self.reverse_mapping[node] = item.character
             return
         self.reverse(item.left, node + "0")
         self.reverse(item.right, node + "1")
@@ -75,6 +79,32 @@ class Huffman_algo:
             else:
                 string += self.dict[i]
         return string
+
+    def decode(self, encoded_text):
+        current_code = ""
+        decoded_text = ""
+        i = 1
+        k = 0
+        for bit in encoded_text:
+            current_code += bit
+            if current_code in self.reverse_mapping:
+                print("Step " + str(i) + ".")
+                character = self.reverse_mapping[current_code]
+                print(str(self.dict[character]) + " Node" + str(k) + ":(" + str(self.dict[character]) + ")",
+                      character.split(","))
+                if character == 'newspace':
+                    character = "\n"
+                elif character == 'space':
+                    character = " "
+                elif character == 'tab':
+                    character = '\t'
+                decoded_text += character
+                current_code = ""
+                i += 1
+            k += 1
+
+
+        return decoded_text
 
     def dict(self):
         return self.dict
@@ -151,6 +181,8 @@ def main():
     for key, index in sorted(final.items(), key=lambda item: item[1], reverse=True):
         node_list.append(index[1])
 
+    d_up = {}
+
     # 4
     new_file = open("sequence_of_binary_digits.txt", "w+")
     new_file.write(temp.print_bytes(contents))
@@ -171,7 +203,12 @@ def main():
         Node_letters_2.pop()
         k += 2
         val += 1
-
+    value = temp.decode(temp.print_bytes(contents))
+    print("---------------------------------------------------------------------------------------------")
+    print("Initial Text:\n" + str(contents))
+    print("\n")
+    print("Decoded Text:\n" + str(value))
+    print("---------------------------------------------------------------------------------------------")
 
 if __name__ == '__main__':
     main()
