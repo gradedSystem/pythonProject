@@ -8,7 +8,6 @@ Node_Value_2 = []
 Node_letters_1 = []
 Node_letters_2 = []
 
-
 class Node:
     def __init__(self, character, frequency):
         self.data = str(frequency)
@@ -83,15 +82,70 @@ class Huffman_algo:
     def decode(self, encoded_text):
         current_code = ""
         decoded_text = ""
-        i = 1
-        k = 0
+        k = 1
         for bit in encoded_text:
             current_code += bit
             if current_code in self.reverse_mapping:
-                print("Step " + str(i) + ".")
+                print("Step " + str(k) + ".")
                 character = self.reverse_mapping[current_code]
-                print(str(self.dict[character]) + " Node" + str(k) + ":(" + str(self.dict[character]) + ")",
-                      character.split(","))
+                value = list(self.reverse_mapping.keys()).index(current_code)
+                temp_list = []
+                letter_list = []
+                if value < 2:
+                    temp_list.append(tuple(self.reverse_mapping.items())[value][0])
+                    for name, age in self.reverse_mapping.items():
+                        if name == tuple(self.reverse_mapping.items())[value][0]:
+                            letter_list.append(age)
+                            break
+                    temp_list.append(tuple(self.reverse_mapping.items())[value + 1][0])
+                    for name, age in self.reverse_mapping.items():
+                        if name == tuple(self.reverse_mapping.items())[value + 1][0]:
+                            letter_list.append(age)
+                            break
+                    temp_list.append(tuple(self.reverse_mapping.items())[value + 2][0])
+                    for name, age in self.reverse_mapping.items():
+                        if name == tuple(self.reverse_mapping.items())[value + 2][0]:
+                            letter_list.append(age)
+                            break
+                    s = 2
+                    for i in reversed(range(len(letter_list))):
+                        print(str(temp_list[len(letter_list) - 1]) + ". Node" + str(value + s) + ": (" + str(
+                            temp_list[len(temp_list) - 1]) + ")" + ','.join(
+                            map(str, letter_list)))
+                        if len(letter_list) == 1:
+                            print("Symbol: " + str(temp_list[len(letter_list) - 1]) + " - " + str(
+                                letter_list[len(temp_list) - 1]))
+                        s -= 1
+                        letter_list.pop()
+                        temp_list.pop()
+                else:
+                    temp_list.append(tuple(self.reverse_mapping.items())[value][0])
+                    for name, age in self.reverse_mapping.items():
+                        if name == tuple(self.reverse_mapping.items())[value][0]:
+                            letter_list.append(age)
+                            break
+                    temp_list.append(tuple(self.reverse_mapping.items())[value - 1][0])
+                    for name, age in self.reverse_mapping.items():
+                        if name == tuple(self.reverse_mapping.items())[value - 1][0]:
+                            letter_list.append(age)
+                            break
+                    temp_list.append(tuple(self.reverse_mapping.items())[value - 2][0])
+                    for name, age in self.reverse_mapping.items():
+                        if name == tuple(self.reverse_mapping.items())[value - 2][0]:
+                            letter_list.append(age)
+                            break
+                    n = 2
+                    for i in reversed(range(len(letter_list))):
+                        print(str(temp_list[len(letter_list) - 1]) + ". Node" + str(value - n) + ": (" + str(
+                            temp_list[len(letter_list) - 1]) + ") " + ','.join(
+                            map(str, letter_list)))
+                        if len(letter_list) == 1:
+                            print("Symbol: " + str(temp_list[len(temp_list) - 1]) + " - " + str(
+                                letter_list[len(temp_list) - 1]))
+                        n -= 1
+                        letter_list.pop()
+                        temp_list.pop()
+
                 if character == 'newspace':
                     character = "\n"
                 elif character == 'space':
@@ -100,11 +154,9 @@ class Huffman_algo:
                     character = '\t'
                 decoded_text += character
                 current_code = ""
-                i += 1
-            k += 1
+                k += 1
 
-
-        return decoded_text
+        return decoded_text, self.reverse_mapping
 
     def dict(self):
         return self.dict
@@ -175,13 +227,12 @@ def main():
 
     # 3
     node_list = []
-
+    node_list_2 = []
     for key, index in sorted(final.items(), key=lambda item: item[1], reverse=True):
         print(key + " - " + str(index[0]) + " - " + index[1])
     for key, index in sorted(final.items(), key=lambda item: item[1], reverse=True):
         node_list.append(index[1])
-
-    d_up = {}
+        node_list_2.append(index[1])
 
     # 4
     new_file = open("sequence_of_binary_digits.txt", "w+")
@@ -191,6 +242,7 @@ def main():
     # 2
     k = 1
     val = 1
+
     for i in reversed(range(ls)):
         if k >= ls:
             break
@@ -203,12 +255,17 @@ def main():
         Node_letters_2.pop()
         k += 2
         val += 1
-    value = temp.decode(temp.print_bytes(contents))
+
+    d_value = {}
+    value, rev_m = temp.decode(temp.print_bytes(contents))
+    print(rev_m)
+
     print("---------------------------------------------------------------------------------------------")
     print("Initial Text:\n" + str(contents))
     print("\n")
     print("Decoded Text:\n" + str(value))
     print("---------------------------------------------------------------------------------------------")
+
 
 if __name__ == '__main__':
     main()
