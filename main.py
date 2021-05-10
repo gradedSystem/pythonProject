@@ -185,6 +185,98 @@ def merge(d1, d2):
     return d3
 
 
+def print_Datablocks_4(bitstring):
+    n = 4
+    l = 1
+    chunks = [bitstring[i:i+n] for i in range(0, len(bitstring), n)]
+    if len(chunks[len(chunks)-1]) % 4 != 0:
+        u = 4 - len(chunks[len(chunks)-1])
+        for i in range(0,u):
+            chunks[len(chunks)-1]+='0'
+
+    print("DataBlocks: ")
+    for i in chunks:
+        if i == len(chunks)-1:
+            break
+        print("b"+str(l)+": "+ i + ", ", end=" ")
+        l+=1
+    return chunks
+
+def parity_res(a,b,c):
+    return (a^b)^c
+
+def final_parity(a,b,c,d,e,f,g):
+    return (((((a^b)^c)^d)^e)^f)^g
+
+def HammingEncode_7_4(bitstring):
+    chunks = []
+    string = ""
+    y = 0
+    for i in range(0,len(bitstring)):
+        chunks.append(string)
+    for i in bitstring:
+        print(i+":")
+        print("Expand the block to 8 bits:___"+i[0]+"_"+i[1]+i[2]+i[3])
+        p1 = str(parity_res(int(i[0]),int(i[1]),int(i[3])))
+        p2 = str(parity_res(int(i[0]),int(i[2]),int(i[3])))
+        p3 = str(parity_res(int(i[1]),int(i[2]),int(i[3]))) 
+        p0 = str(final_parity(int(p1),int(p2),int(i[0]),int(p3),int(i[1]),int(i[2]),int(i[3])))
+        print("p1: b3+b5+b7 = " + i[0]+"+"+i[1]+"+"+i[2]+" = " + p1 + ".")
+        print("p2: b3+b5+b7 = " + i[0]+"+"+i[2]+"+"+i[3]+" = " + p2 + ".")
+        print("p3: b3+b5+b7 = " + i[1]+"+"+i[2]+"+"+i[3]+" = " + p3 + ".")
+        print("p0: b3+b5+b7 = " + i[0]+"+"+i[1]+"+"+i[2]+" = " + p0 + ".")
+        chunks[y] = p0+p1+p2+i[0]+p3+i[1]+i[2]+i[3]
+        print("Encoded bitstring: " + str(chunks[y])+".")
+        y+=1
+    
+    return chunks
+
+    
+
+def print_Datablocks_15_11(bitstring):
+    n = 11
+    l = 1
+    chunks = [bitstring[i:i+n] for i in range(0, len(bitstring), n)]
+    if len(chunks[len(chunks)-1]) % 11 != 0:
+        u = 11 - len(chunks[len(chunks)-1])
+        for i in range(0,u):
+            chunks[len(chunks)-1]+='0'
+
+    print("DataBlocks: ")
+    for i in chunks:
+        if i == len(chunks)-1:
+            break
+        print("b"+str(l)+": "+ i + ", ", end=" ")
+        l+=1
+    return chunks
+
+def parity_res_15_11(a,b,c,d,e,f,g):
+    return (((((a^b)^c)^d)^e)^f)^g
+
+def HammingEncode_15_11(bitstring):
+    chunks = []
+    string = ""
+    y = 0
+    for i in range(0,len(bitstring)):
+        chunks.append(string)
+    for i in bitstring:
+        print(i+":")
+        print("Expand the block to 16 bits:__"+i[0]+"_"+i[1]+i[2]+i[3]+"_"+i[4]+i[5]+i[6]+i[7]+i[8]+i[9]+i[10])
+        p1 = str(parity_res_15_11(int(i[0]),int(i[1]),int(i[3]),int(i[4]),int(i[6]),int(i[8]),int(i[10])))
+        p2 = str(parity_res_15_11(int(i[0]),int(i[2]),int(i[3]),int(i[5]),int(i[6]),int(i[9]),int(i[10])))
+        p4 = str(parity_res_15_11(int(i[1]),int(i[2]),int(i[3]),int(i[7]),int(i[8]),int(i[9]),int(i[10])))
+        p8 = str(parity_res_15_11(int(i[4]),int(i[5]),int(i[6]),int(i[7]),int(i[8]),int(i[9]),int(i[10])))
+        print("p1: b3+b5+b7+b9+b11+b13+b15 = " + i[0]+"+"+i[1]+"+"+i[3]+"+"+i[4]+"+"+i[6]+"+"+i[8]+"+"+i[10]+" = " + p1 + ".")
+        print("p2: b3+b6+b7+b10+b11+b14+b15 = " + i[0]+"+"+i[2]+"+"+i[3]+"+"+i[5]+"+"+i[6]+"+"+i[9]+"+"+i[10]+" = " + p2 + ".")
+        print("p4: b5+b6+b7+b12+b13+b14+b15 = " + i[1]+"+"+i[2]+"+"+i[3]+"+"+i[7]+"+"+i[8]+"+"+i[9]+"+"+i[10]+" = " + p4 + ".")
+        print("p8: b9+b10+b11+b12+b13+b14+b15 = " + i[4]+"+"+i[5]+"+"+i[6]+"+"+i[7]+"+"+i[8]+"+"+i[9]+"+"+i[10]+" = " + p8 + ".")
+        chunks[y] = p1+p2+i[0]+p4+i[1]+i[2]+i[3]+p8+i[4]+i[5]+i[6]+i[7]+i[8]+i[9]+i[10]
+        print("Encoded bitstring: " + str(chunks[y])+".")
+        y+=1
+    return chunks
+
+
+
 def main():
     # Read the text
     text = open('Text.txt', 'r')
@@ -266,6 +358,31 @@ def main():
     print("Decoded Text:\n" + str(value))
     print("---------------------------------------------------------------------------------------------")
 
+    print(20*"-"+"Assignemnt 6"+20*"-")
 
+    value_sequence_encoded = open('sequence_of_binary_digits.txt','r').read()
+    
+    print("1.\n" + str(value_sequence_encoded))
+    
+    print("2/3/4. Hamming_7_4")
+    data = print_Datablocks_4(value_sequence_encoded)
+    chunks = HammingEncode_7_4(data)
+
+    print("2/3/4. Hamming_15_11")
+    data2 = print_Datablocks_15_11(value_sequence_encoded)
+    chunks2 = HammingEncode_15_11(data2)
+
+    print("5. Hamming_7_4")
+    Hamming_7_4 = open("Hamming_7_4.txt", "w+")
+    Hamming_7_4.write(''.join(chunks))
+    Hamming_7_4.close()
+    val1 = open('Hamming_7_4.txt','r').read()
+
+    print("5. Hamming_15_11")
+    Hamming_15_11 = open("Hamming_15_11.txt", "w+")
+    Hamming_15_11.write(''.join(chunks2))
+    Hamming_15_11.close()
+    val2 = open('Hamming_15_11.txt','r').read()
+    
 if __name__ == '__main__':
     main()
