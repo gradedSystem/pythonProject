@@ -1,37 +1,53 @@
 # pythonProject
-Assignment 6 (Part 4 of the project)
-Input: file with the sequence of bits from assignment 3.
-Goal: Encode the binary sequence after Part2 (Shannon-Fano or Huffman code) with Hamming
-code.
-Final output: a sequence of binary digits ready for error correction.
+Assignment 7 (Part 5 of the project)
+
+Input: a sequence of binary digits from Part 4
+Goal: Add errors to the binary sequence after Part4 (Hamming code). Decode Hamming code and
+fix errors.
+Final output: a sequence of binary digits identical to an output sequence from Part 2
 Output:
-1. Read the file with the sequence of bits from assignment 3. Sample output (1):
-10110101100010…
-2. For teams of 2: one member builds (15, 11) Extended Hamming code as described
-in Lecture 4 (it uses 11 data bits), another member builds (7, 4) Hamming code using one of the
-approaches from Lecture 5 (it uses 4 data bits). For approach 1 (7, 4) Hamming code from Lecture
-5 use the extended version where you will add a parity bit in the 0th position to check the parity
-of all 7 bits.
-For teams of 3: one member builds (15, 11) Extended Hamming code using approach from
-Lecture 4, 2nd member builds (7, 4) Extended Hamming code using first approach from Lecture
-5, 3rd - (7, 4) Hamming code using the second approach from Lecture 5 (with matrices).
-Divide the sequence from the previous output (1) into data blocks: 11 data bits for (15, 11)
-Extended Hamming code, and 4 data bits for (7, 4) Hamming code.
+1. Read the file with the sequence of bits from assignment 7 and divide into blocks of
+8 or 16 bits based on your Hamming code method from the previous assignment. Each member
+of a team should have one method. Sample output (1):
+Original file: 0011001101101001…
+Initial blocks: b1: 00110011, b2: 01101001, …
+2. You will simulate the channel by randomly flipping each bit in each codeword with
+a probability 30 – 50%. You will need to generate one error in one data bit of 30 – 50% blocks
+randomly. For example, if you have 10 blocks, you will need to flip one data bit in 3-5 blocks. The
+data bit you flip and the block you choose should be random.
+Write a function called ErrorGen(percent, bitstring), which takes as input a bitstring block to send
+over a binary symmetric channel, and simulates flipping bits at a rate percent. It then returns the
+corrupted string.
 Sample output (2):
-Data blocks: b1: 1011, b2: 0101, b3: 0001 …
-3. Write a function HammingEncode(bitstring) that takes a sequence of 11 bits and
-returns the 16-bit codeword for (15, 11) Extended Hamming to be sent over the channel, and a
-function HammingEncode2(bitstring) that takes a sequence of 4 bits and returns the 8-bit
-codeword for (7, 4) Extended Hamming to be sent over the channel (or the 7-bit codeword for
-(7, 4) Hamming approach 2 with matrices). Include all intermediate steps.
+Blocks with errors: b1: 10110100, b2: 01010101, …
+3. You will also need a function HammingDecode(bitstring) that takes 8 or 16 bit
+number (the output of the channel) and returns a guess at the 4 or 11 bit number originally sent.
+Include all intermediate steps.
 Sample output (3):
-1011:
-Expand the block to 8 bits: _ _ _ 1 _ 0 1 1.
-p1: b3+b5+b7 = 1+0+1 = 0.
-p2: b3+b6+b7 = 1+1+1 = 1.
-p3: b5+b6+b7 = 0+1+1 = 0.
-p0: b1+b2+b3+b4+b5+b6+b7 = 0+1+1+0+0+1+1 = 0.
-Encoded bitstring: 00110011.
-4. Run functions HammingEncode and HammingEncode2 on all data blocks. Please
+0 0 1 1 0 1 1 1:
+Checking parity bits:
+p1: b3+b5+b7 = 1+1+1 = 1 incorrect.
+p2: b3+b6+b7 = 1+1+1 = 1 correct.
+p3: b5+b6+b7 = 1+1+1 = 1 incorrect.
+p0: b1+b2+b3+b4+b5+b6+b7 = 0+1+1+0+1+1+1 = 1 incorrect.
+Error in position: 5
+Corrected bitstring: 0 0 1 1 0 0 1 1.
+Decoded bitstring: 1 0 1 1.
+0 1 1 0 1 0 0 1:
+Checking parity bits:
+p1: b3+b5+b7 = 0+0+1 = 1 correct.
+p2: b3+b6+b7 = 0+0+1 = 1 correct.
+p3: b5+b6+b7 = 0+0+1 = 1 correct.
+p0: b1+b2+b3+b4+b5+b6+b7 = 1+1+0+1+0+0+1 = 0 correct.
+No error.
+Decoded bitstring: 0 0 0 1.
+4. Run functions HammingDecode and HammingDecode2 on all data blocks. Please
 include all intermediate steps. The output should be the same as in the previous output (3), but
 on all data blocks.
+5. Combine all of the decoded bitstrings into one sequence. Print it and save it in a txt
+file. Compare it with the with the sequence of bits from assignment 3. Sample output (5):
+Decoded sequence:
+10110101100010…
+Sequence from assignment 3:
+10110101100010…
+They match.
