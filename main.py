@@ -1,5 +1,6 @@
 import heapq
 from heapq import heappop, heappush
+import random
 
 # heapq is default library for heatmaps
 
@@ -184,7 +185,7 @@ def merge(d1, d2):
             d3[key] = [index, d1[key]]
     return d3
 
-
+ns = open("sequence_of_binary_digits.txt").read()
 def print_Datablocks_4(bitstring):
     n = 4
     l = 1
@@ -222,9 +223,9 @@ def HammingEncode_7_4(bitstring):
         p3 = str(parity_res(int(i[1]),int(i[2]),int(i[3]))) 
         p0 = str(final_parity(int(p1),int(p2),int(i[0]),int(p3),int(i[1]),int(i[2]),int(i[3])))
         print("p1: b3+b5+b7 = " + i[0]+"+"+i[1]+"+"+i[2]+" = " + p1 + ".")
-        print("p2: b3+b5+b7 = " + i[0]+"+"+i[2]+"+"+i[3]+" = " + p2 + ".")
-        print("p3: b3+b5+b7 = " + i[1]+"+"+i[2]+"+"+i[3]+" = " + p3 + ".")
-        print("p0: b3+b5+b7 = " + i[0]+"+"+i[1]+"+"+i[2]+" = " + p0 + ".")
+        print("p2: b3+b6+b7 = " + i[0]+"+"+i[2]+"+"+i[3]+" = " + p2 + ".")
+        print("p3: b5+b6+b7  = " + i[1]+"+"+i[2]+"+"+i[3]+" = " + p3 + ".")
+        print("p0: b1+b2+b3+b4+b5+b6+b7 = " + i[0]+"+"+i[1]+"+"+i[2]+" = " + p0 + ".")
         chunks[y] = p0+p1+p2+i[0]+p3+i[1]+i[2]+i[3]
         print("Encoded bitstring: " + str(chunks[y])+".")
         y+=1
@@ -250,9 +251,18 @@ def print_Datablocks_15_11(bitstring):
         l+=1
     return chunks
 
+def parity_string(bitstring):
+    bitstring = ns
+    return ns
+
 def parity_res_15_11(a,b,c,d,e,f,g):
     return (((((a^b)^c)^d)^e)^f)^g
 
+def parity_res_15_11_2(i):
+    ini = int(i[0])
+    for j in range(1,len(i)):
+        ini = ini^int(i[j])
+    return ini
 def HammingEncode_15_11(bitstring):
     chunks = []
     string = ""
@@ -261,20 +271,227 @@ def HammingEncode_15_11(bitstring):
         chunks.append(string)
     for i in bitstring:
         print(i+":")
-        print("Expand the block to 16 bits:__"+i[0]+"_"+i[1]+i[2]+i[3]+"_"+i[4]+i[5]+i[6]+i[7]+i[8]+i[9]+i[10])
+        print("Expand the block to 16 bits:__"+i[0]+"_"+i[1]+i[2]+i[3]+"_"+i[4]+i[5]+i[6]+i[7]+i[8]+i[9]+i[10]+"_")
         p1 = str(parity_res_15_11(int(i[0]),int(i[1]),int(i[3]),int(i[4]),int(i[6]),int(i[8]),int(i[10])))
         p2 = str(parity_res_15_11(int(i[0]),int(i[2]),int(i[3]),int(i[5]),int(i[6]),int(i[9]),int(i[10])))
         p4 = str(parity_res_15_11(int(i[1]),int(i[2]),int(i[3]),int(i[7]),int(i[8]),int(i[9]),int(i[10])))
         p8 = str(parity_res_15_11(int(i[4]),int(i[5]),int(i[6]),int(i[7]),int(i[8]),int(i[9]),int(i[10])))
+        p16 = str(parity_res_15_11_2(i))
         print("p1: b3+b5+b7+b9+b11+b13+b15 = " + i[0]+"+"+i[1]+"+"+i[3]+"+"+i[4]+"+"+i[6]+"+"+i[8]+"+"+i[10]+" = " + p1 + ".")
         print("p2: b3+b6+b7+b10+b11+b14+b15 = " + i[0]+"+"+i[2]+"+"+i[3]+"+"+i[5]+"+"+i[6]+"+"+i[9]+"+"+i[10]+" = " + p2 + ".")
         print("p4: b5+b6+b7+b12+b13+b14+b15 = " + i[1]+"+"+i[2]+"+"+i[3]+"+"+i[7]+"+"+i[8]+"+"+i[9]+"+"+i[10]+" = " + p4 + ".")
         print("p8: b9+b10+b11+b12+b13+b14+b15 = " + i[4]+"+"+i[5]+"+"+i[6]+"+"+i[7]+"+"+i[8]+"+"+i[9]+"+"+i[10]+" = " + p8 + ".")
-        chunks[y] = p1+p2+i[0]+p4+i[1]+i[2]+i[3]+p8+i[4]+i[5]+i[6]+i[7]+i[8]+i[9]+i[10]
+        print("p16: p1+p2+b3+p4+b5+b6+b7+p8+b9+b10+b11+b12+b13+b14+b15 = " + p1+"+"+ p2+"+"+ i[0]+"+"+ p4+"+"+ i[1]+"+"+ i[2]+"+"+ i[3]+"+"+ p8+"+"+ i[4]+"+"+i[5]+"+"+i[6]+"+"+i[7]+"+"+i[8]+"+"+i[9]+"+"+i[10]+" = " + p16 + ".")
+        chunks[y] = p1+p2+i[0]+p4+i[1]+i[2]+i[3]+p8+i[4]+i[5]+i[6]+i[7]+i[8]+i[9]+i[10]+p16
         print("Encoded bitstring: " + str(chunks[y])+".")
         y+=1
     return chunks
 
+def ErrorGen(chunks,rand):
+    length = len(chunks)
+    blocks_with_error = []
+    random_indexes = []
+    indexes = list(range(1, length))
+    while True:
+        val = random.choice(indexes)
+        if len(random_indexes) == rand:
+            break
+        if val not in random_indexes:
+            random_indexes.append(val)
+
+    for i in range(0,length):
+        if i in random_indexes:
+            val = random.choice(indexes)
+            temp = list(chunks[i])
+            if temp[val] == '0':
+                temp[val] = '1'
+            else:
+                temp[val] = '0'
+            blocks_with_error.append(''.join(temp))
+            random_indexes.pop()
+        else:
+            blocks_with_error.append(chunks[i])
+    return blocks_with_error
+
+def check_parity(bitstring):
+    bitstring = " ".join(bitstring)
+    a_list = bitstring.split()
+    map_object = map(int, a_list)
+    list_of_integers = list(map_object)
+    b_p1 = False
+    b_p2 = False
+    b_p3 = False
+    b_p0 = False
+    p1 = list_of_integers[1]
+    p2 = list_of_integers[2]
+    p3 = list_of_integers[4]
+    p0 = list_of_integers[0]
+    if p1 != list_of_integers[3]^list_of_integers[5]^list_of_integers[7]:
+        b_p1 = True
+    if p2 != list_of_integers[3]^list_of_integers[6]^list_of_integers[7]:
+        b_p2 = True
+    if p3 != list_of_integers[5]^list_of_integers[6]^list_of_integers[7]:
+        b_p3 = True
+    if final_parity(p1,p2,list_of_integers[3],p3,list_of_integers[5],list_of_integers[6],list_of_integers[7]) == list_of_integers[0]:
+        b_p0 = True
+    return b_p1,b_p2,b_p3,p1,p2,p3,b_p0,p0
+
+
+def HammingDecode_7_4(corrupted_bitstring):
+    decoded_7_4 = ""
+    for i in corrupted_bitstring:
+        corrupted_bitstring = " ".join(i)
+        a_list = corrupted_bitstring.split()
+        map_object = map(int, a_list)
+        list_of_integers = list(map_object)
+        b_p1,b_p2,b_p3,p1,p2,p3,b_p0,p0 = check_parity(i)
+        if b_p1 == False and b_p2 == False and b_p3 == True and b_p0 == True:
+            if list_of_integers[3] == 0:
+                list_of_integers[3] = 1
+            else:
+                list_of_integers[3] = 0
+        elif b_p2 == False and b_p3 == False and b_p1 == True and b_p0 == True:
+            if list_of_integers[6] == 0:
+                list_of_integers[6] = 1
+            else:
+                list_of_integers[6] = 0
+        elif b_p1 == False and b_p3 == False and b_p2 == True and b_p0 == True:
+            if list_of_integers[5] == 1:
+                list_of_integers[5] = 0
+            else:
+                list_of_integers[5] = 1
+        elif b_p1 == False and b_p2 == False and b_p3 == False and b_p0 == True:
+            if list_of_integers[7] == 1:
+                list_of_integers[7] = 0
+            else:
+                list_of_integers[7] = 1
+        if b_p1 == True and b_p2 == False and b_p3 == True and b_p0 == True:
+            if list_of_integers[2] == 1:
+                list_of_integers[2] = 0
+            else:
+                list_of_integers[2] = 1
+        if b_p2 == True and b_p1 == False and b_p3 == True and b_p0 == True:
+            if list_of_integers[1] == 1:
+                list_of_integers[1] = 0
+            else:
+                list_of_integers[1] = 1 
+        if b_p2 == True and b_p3 == False and b_p1 == True and b_p0 == True:
+            if list_of_integers[4] == 1:
+                list_of_integers[4] = 0
+            else:
+                list_of_integers[4] = 1 
+        if b_p1 == False and b_p2 == False and b_p3 == False and b_p0 == True:
+            if list_of_integers[0] == 1:
+                list_of_integers[0] = 0
+            else:
+                list_of_integers[0] = 1 
+        if b_p2 == True and b_p3 == True and b_p1 == False and b_p0 == True:
+            if list_of_integers[6] == 1:
+                list_of_integers[6] = 0
+            else:
+                list_of_integers[6] = 1 
+        list_of_integers = [str(i) for i in list_of_integers]
+        ind = 0
+        print("Checking parity bits:")
+        if b_p1 == True:
+            print("p1: b3+b5+b7 = " + str(list_of_integers[3])+"+"+str(list_of_integers[5])+"+"+str(list_of_integers[7])+" = " + str(p1) + " incorrect.")
+            ind+=1
+        else:
+            print("p1: b3+b5+b7 = " + str(list_of_integers[3])+"+"+str(list_of_integers[5])+"+"+str(list_of_integers[7])+" = " + str(p1) + " correct.")
+        if b_p2 == True:
+            print("p2: b3+b6+b7 = " + str(list_of_integers[3])+"+"+str(list_of_integers[6])+"+"+str(list_of_integers[7])+" = " + str(p2) + " incorrect.")
+            ind+=2
+        else:
+            print("p2: b3+b6+b7 = " + str(list_of_integers[3])+"+"+str(list_of_integers[6])+"+"+str(list_of_integers[7])+" = " + str(p2) + " correct.")
+        if b_p3 == True:
+            print("p3: b5+b6+b7 = " + str(list_of_integers[5])+"+"+str(list_of_integers[6])+"+"+str(list_of_integers[7])+" = " + str(p3) + " incorrect.")
+            ind+=4
+        else:
+            print("p3: b5+b6+b7 = " + str(list_of_integers[5])+"+"+str(list_of_integers[6])+"+"+str(list_of_integers[7])+" = " + str(p3) + " correct.")
+        if b_p1 == False and b_p2 == False and b_p3 == False:
+            print("p0: b1+b2+b3+b4+b5+b6+b7 = " + str(list_of_integers[1])+"+"+ str(list_of_integers[2])+"+"+ str(list_of_integers[3])+"+"+ str(list_of_integers[4])+"+"+str(list_of_integers[5])+"+"+str(list_of_integers[6])+ "+" +str(list_of_integers[7])+" = "+str(p0)+ " correct.")
+            print("No Error")
+            print("Decoded bitstring: " + str(list_of_integers[3])+" " + str(list_of_integers[5])+" " + str(list_of_integers[6]) + " " +str(list_of_integers[7])+ ".")
+            decoded_7_4+=str(list_of_integers[3])+str(list_of_integers[5])+str(list_of_integers[6]) +str(list_of_integers[7])
+        else:
+            print("p0: b1+b2+b3+b4+b5+b6+b7 = " + str(list_of_integers[1])+"+"+ str(list_of_integers[2])+"+"+ str(list_of_integers[3])+"+"+ str(list_of_integers[4])+"+"+str(list_of_integers[5])+"+"+str(list_of_integers[6])+ "+" +str(list_of_integers[7])+" = "+str(p0)+ " incorrect.")
+            print("Error in position: "+str(ind))
+            print("Corrected bitstring: ",end = "")
+            print(*list_of_integers,end="")
+            print(".")
+            print("Decoded bitstring: " + str(list_of_integers[3])+" " + str(list_of_integers[5])+" " + str(list_of_integers[6]) + " " +str(list_of_integers[7])+ ".")
+            decoded_7_4+=str(list_of_integers[3])+str(list_of_integers[5])+str(list_of_integers[6]) +str(list_of_integers[7])
+    return decoded_7_4
+        
+def check_parity_15_11(bitstring):
+    bitstring = " ".join(bitstring)
+    a_list = bitstring.split()
+    map_object = map(int, a_list)
+    k = list(map_object)
+    b_p1 = False
+    b_p2 = False
+    b_p4 = False
+    b_p8 = False
+    b_p16 = False
+    p1 = k[0]
+    p2 = k[1]
+    p4 = k[3]
+    p8 = k[7]
+    p16 = k[15]
+    if p1 != k[2]^k[4]^k[6]^k[8]^k[10]^k[12]^k[14]:
+        b_p1 = True
+    if p2 != k[2]^k[5]^k[6]^k[9]^k[10]^k[13]^k[14]:
+        b_p2 = True
+    if p4 != k[5]^k[6]^k[7]^k[11]^k[12]^k[13]^k[14]:
+        b_p4 = True
+    if p8 != k[8]^k[9]^k[10]^k[11]^k[12]^k[13]^k[14]:
+        b_p8 = True
+    if p16 != p1^p2^k[2]^p4^k[4]^k[5]^k[6]^p8^k[8]^k[9]^k[10]^k[11]^k[12]^k[13]^k[14]:
+        b_p16 = True
+    return b_p1,b_p2,b_p4,b_p8,b_p16,p1,p2,p4,p8,p16
+
+def HammingDecode_15_11(corrupted_bitstring):
+    decoded_15_11 =""
+    for i in corrupted_bitstring:
+        corrupted_bitstring = " ".join(i)
+        a_list = corrupted_bitstring.split()
+        map_object = map(int, a_list)
+        list_of_integers = list(map_object)
+        b_p1,b_p2,b_p4,b_p8,b_p16,p1,p2,p4,p8,p16 = check_parity_15_11(i)
+        ind = 0
+        if b_p1 == True:
+            print("p1: d1+d2+d4+d5+d7+d9+d11 = " + str(list_of_integers[2])+"+"+str(list_of_integers[4])+"+"+str(list_of_integers[6])+"+"+str(list_of_integers[8])+"+"+str(list_of_integers[10])+"+"+str(list_of_integers[12])+"+"+str(list_of_integers[14])+" = " + str(p1) + " incorrect.")      
+            ind+=1
+        else:
+            print("p1: d1+d2+d4+d5+d7+d9+d11 = " + str(list_of_integers[2])+"+"+str(list_of_integers[4])+"+"+str(list_of_integers[6])+"+"+str(list_of_integers[8])+"+"+str(list_of_integers[10])+"+"+str(list_of_integers[12])+"+"+str(list_of_integers[14])+" = " + str(p1) + " correct.")      
+        if b_p2 == True:
+            ind+=2
+            print("p2: d1+d2+d4+d5+d7+d9+d11 = " + str(list_of_integers[2])+"+"+str(list_of_integers[5])+"+"+str(list_of_integers[6])+"+"+str(list_of_integers[9])+"+"+str(list_of_integers[10])+"+"+str(list_of_integers[13])+"+"+str(list_of_integers[14])+" = " + str(p1) + " incorrect.")      
+        else:
+            print("p2: d1+d2+d4+d5+d7+d9+d11 = " + str(list_of_integers[2])+"+"+str(list_of_integers[5])+"+"+str(list_of_integers[6])+"+"+str(list_of_integers[9])+"+"+str(list_of_integers[10])+"+"+str(list_of_integers[13])+"+"+str(list_of_integers[14])+" = " + str(p1) + " correct.") 
+        if b_p4 == True:
+            ind+=4
+            print("p4: d1+d2+d4+d5+d7+d9+d11 = " + str(list_of_integers[5])+"+"+str(list_of_integers[6])+"+"+str(list_of_integers[7])+"+"+str(list_of_integers[11])+"+"+str(list_of_integers[12])+"+"+str(list_of_integers[13])+"+"+str(list_of_integers[14])+" = " + str(p1) + " incorrect.")      
+        else:
+            print("p4: d1+d2+d4+d5+d7+d9+d11 = " + str(list_of_integers[5])+"+"+str(list_of_integers[6])+"+"+str(list_of_integers[7])+"+"+str(list_of_integers[11])+"+"+str(list_of_integers[12])+"+"+str(list_of_integers[13])+"+"+str(list_of_integers[14])+" = " + str(p1) + " correct.") 
+        if b_p8 == True:
+            ind+=8
+            print("p8: d1+d2+d4+d5+d7+d9+d11 = " + str(list_of_integers[8])+"+"+str(list_of_integers[9]+"+"+str(list_of_integers[10])+"+"+str(list_of_integers[11])+"+"+str(list_of_integers[12])+"+"+str(list_of_integers[13])+"+"+str(list_of_integers[14])+" = " + str(p1) + " incorrect."))     
+        else:
+            print("p8: d1+d2+d4+d5+d7+d9+d11 = " + str(list_of_integers[8])+"+"+str(list_of_integers[9])+"+"+str(list_of_integers[10])+"+"+str(list_of_integers[11])+"+"+str(list_of_integers[12])+"+"+str(list_of_integers[13])+"+"+str(list_of_integers[14])+" = " + str(p1) + " correct.") 
+        if b_p1 == False and b_p2 == False and b_p4 == False and b_p8 == False and b_p16 == False:
+            print("p16: p1+p2+b3+p4+b5+b6+b7+p8+b9+b10+b11+b12+b13+b14+b15 = " + str(p1) +"+"+ str(p2)+"+"+ str(list_of_integers[2])+"+"+ str(p4)+"+"+ str(list_of_integers[4])+"+"+ str(list_of_integers[5])+"+"+ str(list_of_integers[6])+"+"+ str(p8)+"+"+ str(list_of_integers[8])+"+"+str(list_of_integers[9])+"+"+str(list_of_integers[10])+"+"+str(list_of_integers[11])+"+"+str(list_of_integers[12])+"+"+str(list_of_integers[13])+"+"+str(list_of_integers[14])+" = " + str(p16) + " correct.")
+            print("No Error")
+            print("Decoded string: "+ str(list_of_integers[2])+ " " + str(list_of_integers[4])+ " " +str(list_of_integers[5]) + " " + str(list_of_integers[6]) + " "+ str(list_of_integers[8])+" "+str(list_of_integers[9])+" "+str(list_of_integers[9])+" "+str(list_of_integers[11])+" "+str(list_of_integers[12])+" "+str(list_of_integers[13])+" "+str(list_of_integers[14])+".")
+            decoded_15_11+=str(list_of_integers[2])+str(list_of_integers[4])+str(list_of_integers[5]) +str(list_of_integers[6]) +str(list_of_integers[8])+str(list_of_integers[9])+str(list_of_integers[11])+str(list_of_integers[12])+str(list_of_integers[13])+str(list_of_integers[14])
+        else:
+            print("p16: p1+p2+b3+p4+b5+b6+b7+p8+b9+b10+b11+b12+b13+b14+b15 = " + str(p1) +"+"+ str(p2)+"+"+ str(list_of_integers[2])+"+"+ str(p4)+"+"+ str(list_of_integers[4])+"+"+ str(list_of_integers[5])+"+"+ str(list_of_integers[6])+"+"+ str(p8)+"+"+ str(list_of_integers[8])+"+"+str(list_of_integers[9])+"+"+str(list_of_integers[10])+"+"+str(list_of_integers[11])+"+"+str(list_of_integers[12])+"+"+str(list_of_integers[13])+"+"+str(list_of_integers[14])+" = " + str(p16) + " correct.")
+            print("Error in position: " + str(ind))
+            print("Corrected bitstring: ",end = "")
+            print(*list_of_integers,end=".\n")
+            print("Decoded string: "+ str(list_of_integers[2])+ " " + str(list_of_integers[4])+ " " +str(list_of_integers[5]) + " " + str(list_of_integers[6]) + " "+ str(list_of_integers[8])+" "+str(list_of_integers[9])+" "+str(list_of_integers[10])+" "+str(list_of_integers[11])+" "+str(list_of_integers[12])+" "+str(list_of_integers[13])+" "+str(list_of_integers[14]) + ".")
+            decoded_15_11+=str(list_of_integers[2])+str(list_of_integers[4])+str(list_of_integers[5]) +str(list_of_integers[6]) +str(list_of_integers[8])+str(list_of_integers[9])+str(list_of_integers[11])+str(list_of_integers[12])+str(list_of_integers[13])+str(list_of_integers[14])
+    return decoded_15_11
 
 
 def main():
@@ -348,7 +565,6 @@ def main():
         k += 2
         val += 1
 
-    d_value = {}
     value, rev_m = temp.decode(temp.print_bytes(contents))
     print(rev_m)
 
@@ -383,6 +599,63 @@ def main():
     Hamming_15_11.write(''.join(chunks2))
     Hamming_15_11.close()
     val2 = open('Hamming_15_11.txt','r').read()
+
+
+    print("---------------------------------------------------------------------------------------------")
+    print("Assignment 7")
+    #part - 1
+    #chunks and chunks2 already do the first part of the code
+    print("Original file: ", value_sequence_encoded)
+    n = 1
+    print("Hamming_7_4 Initial blocks: ", end="")
+    for i in chunks:
+        print("b"+str(n)+" " + str(i), end=", ")
+        n+=1
+    n = 1
+    print("\nHamming_15_11 Initial blocks: ", end="")
+    for i in chunks2:
+        print("b"+str(n)+" " + str(i), end=", ")
+        n+=1
+    print("\n")
+    #part - 2
+    n = 1
+    length_1 = len(chunks)
+    rand_1 = random.randint(int(0.3*length_1), int(0.5*length_1))
+    blocks_with_error = ErrorGen(chunks,rand_1)
+    print("Hamming_7_4 Blocks with error: ", end="")
+    for i in blocks_with_error:
+        print("b"+str(n)+" " + str(i), end=", ")
+        n+=1
+    n = 1
+    length_2 = len(chunks2)
+    rand_2 = random.randint(int(0.3*length_2), int(0.5*length_2))
+    blocks_with_error2 = ErrorGen(chunks2,rand_2)
+    print("\nHamming_15_11 Blocks with error: ", end="")
+    for i in blocks_with_error2:
+        print("b"+str(n)+" " + str(i), end=", ")
+        n+=1
+    n = 1
+    print("\n")
+    print("Assignment 7 part3:")
+
+
+    print("---------------------------------------------------------------------------------------------")
+    print("Hamming 7 4 Decode")
+    for i in blocks_with_error:
+        print("b"+str(n)+" " + str(i), end=", ")
+        n+=1
+    decoded_7_4 = parity_string(HammingDecode_7_4(blocks_with_error))
+
+    print("---------------------------------------------------------------------------------------------")
+    print("Hamming 15 11 Decode")
+    decoded_15_11 = parity_string(HammingDecode_15_11(blocks_with_error2))
+
+    print("---------------------------------------------------------------------------------------------")
+    print("5.")
+    print("Decoded sequence:")
+    print(decoded_15_11)
+    print("Sequence from assignment 3:")
+    print(value_sequence_encoded)
     
 if __name__ == '__main__':
     main()
