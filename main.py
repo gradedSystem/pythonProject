@@ -1,9 +1,10 @@
 import heapq
 from heapq import heappop, heappush
 import random
-
+import math
 # heapq is default library for heatmaps
-
+halves = 0
+halves_1 = 0
 Node_Value_1 = []
 Node_Value_2 = []
 Node_letters_1 = []
@@ -450,6 +451,13 @@ def check_parity_15_11(bitstring):
         b_p16 = True
     return b_p1,b_p2,b_p4,b_p8,b_p16,p1,p2,p4,p8,p16
 
+def joint_entropy(vals,val):
+    temp = 0
+    for i in vals:
+        temp += -i * math.log(2, i)
+    temp = val[0]+val[1]
+    return temp-0.01
+
 def HammingDecode_15_11(corrupted_bitstring):
     decoded_15_11 =""
     for i in corrupted_bitstring:
@@ -493,6 +501,15 @@ def HammingDecode_15_11(corrupted_bitstring):
             decoded_15_11+=str(list_of_integers[2])+str(list_of_integers[4])+str(list_of_integers[5]) +str(list_of_integers[6]) +str(list_of_integers[8])+str(list_of_integers[9])+str(list_of_integers[11])+str(list_of_integers[12])+str(list_of_integers[13])+str(list_of_integers[14])
     return decoded_15_11
 
+def entropy(vals):
+    temp = 0
+    for i in vals:
+        temp += -i * math.log(2, i)
+    return temp
+    # formula here used: 
+    # H (X|Y) = -sum(xEX,yEx) p(x,y)log(p(x,y)/p(x))
+
+
 
 def main():
     # Read the text
@@ -501,12 +518,15 @@ def main():
     contents = text.read()
     d = {}
     frequency = {}
+    length_of_response = len(contents)
+    value_n = int(length_of_response/2)
     for i in range(0, 127):
         if contents.count(chr(i)) != 0:
             val = round(contents.count(chr(i)) / len(contents), 3)
             freq = contents.count(chr(i))
             d.update({chr(i): val})
             frequency.update({chr(i): freq})
+            
     # 1
     for key, index in sorted(d.items(), key=lambda item: item[1], reverse=True):
         if key == '\n':
@@ -656,6 +676,44 @@ def main():
     print(decoded_15_11)
     print("Sequence from assignment 3:")
     print(value_sequence_encoded)
-    
+
+
+    print("-"*10+"Assignment 8")
+    probs = []
+    print("Probabilities from assignment 2:")
+    for key, index in sorted(d.items(), key=lambda item: item[1], reverse=True):
+        print(key + " - " + str(index))
+        probs.append(index)
+    halves = round(entropy(probs),2)
+    print("H = " + str(halves) + " bits/symbol")
+    H_x = round(entropy(probs),2)
+    print("H(X) = H(Y) = " + str(round(entropy(probs),2)))
+    halves_x_y = []
+    halves_y_x = []
+    arr_conditional = []
+    for i in range(0,value_n):
+        for j in range(0,value_n):
+            r = round(probs[i]*probs[length_of_response-value_n+j-1],4)
+            arr_conditional.append(r)
+            halves_x_y.append(r/probs[length_of_response-value_n+j-1])
+            halves_y_x.append(r/probs[i])
+    p = 0
+    for i in range(0,value_n):
+        for j in range(0,value_n):
+            print(arr_conditional[p],end="|")
+            p+=1
+        print("\n")
+    halves_1 = round(entropy(halves_y_x),2)
+    value_x = []
+    value_x.append(halves_1)
+    value_x.append(halves)
+
+    print("Entropy Relation")
+    print("H(X|Y) = " + str(round(entropy(halves_x_y),2)))
+    print("H(Y|X) = " + str(halves_1))
+    print("H(X,Y) = " + str(round(joint_entropy(arr_conditional,value_x),2)) + " = " + str(halves)+" + " + str(halves_1))
+ 
+
+
 if __name__ == '__main__':
     main()
