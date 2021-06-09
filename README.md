@@ -1,65 +1,53 @@
 # pythonProject
-Assignment 3 (Part 2 of the project)
-Input: “Text.txt” file and the result from Part 1.
-Goal: Encode the text from the “Text.txt” file using Shannon-Fano or Huffman algorithm with
-probabilities from Part 1.
+Assignment 7 (Part 5 of the project)
+
+Input: a sequence of binary digits from Part 4
+Goal: Add errors to the binary sequence after Part4 (Hamming code). Decode Hamming code and
+fix errors.
+Final output: a sequence of binary digits identical to an output sequence from Part 2
 Output:
-1. Symbols with probabilities sorted in descending order (round to three decimal places). Please
-also add the notations for whitespace, new line, tab and etc. in order to distinguish them.
-Sample output for (1):
-A – 0.04
-B – 0.032
-a – 0.025
-space – 0.012
-, – 0.005
-…
-2. Build Shannon-Fano or Huffman code tree based on the given list with probabilities. Include
-all intermediate steps.
-Sample output for (2):
-Step 1.
-Node1: (0) B, E – sum 0.571
-Node2: (1) A, D, space – sum 0.429
-Step 2.
-Node3: (00) B – sum 0.285
-Node4: (01) E – sum 0.285
-Node5: (10) A, D – sum 0.285
-Node6: (11) space – sum 0.142
-Step 3.
-Node7: (100) A – sum 0.142
-Node8: (101) D – sum 0.142
-…..
-3. Create the list with symbols and their codewords in descending order starting from the most
-frequent symbol to the least frequent symbol. Perform a traversal of tree to determine all
-codewords.
-Sample output for (3):
-symbol – probability - codeword:
-B - 0.285 – 00
-E - 0.285 – 01
-A- 0.142 – 100
-….
-4. Scan text again, output a sequence of binary digits using the Shannon-Fano or Huffman
-codes, and save in a new .txt file.
-Sample output for (4):
+1. Read the file with the sequence of bits from assignment 7 and divide into blocks of
+8 or 16 bits based on your Hamming code method from the previous assignment. Each member
+of a team should have one method. Sample output (1):
+Original file: 0011001101101001…
+Initial blocks: b1: 00110011, b2: 01101001, …
+2. You will simulate the channel by randomly flipping each bit in each codeword with
+a probability 30 – 50%. You will need to generate one error in one data bit of 30 – 50% blocks
+randomly. For example, if you have 10 blocks, you will need to flip one data bit in 3-5 blocks. The
+data bit you flip and the block you choose should be random.
+Write a function called ErrorGen(percent, bitstring), which takes as input a bitstring block to send
+over a binary symmetric channel, and simulates flipping bits at a rate percent. It then returns the
+corrupted string.
+Sample output (2):
+Blocks with errors: b1: 10110100, b2: 01010101, …
+3. You will also need a function HammingDecode(bitstring) that takes 8 or 16 bit
+number (the output of the channel) and returns a guess at the 4 or 11 bit number originally sent.
+Include all intermediate steps.
+Sample output (3):
+0 0 1 1 0 1 1 1:
+Checking parity bits:
+p1: b3+b5+b7 = 1+1+1 = 1 incorrect.
+p2: b3+b6+b7 = 1+1+1 = 1 correct.
+p3: b5+b6+b7 = 1+1+1 = 1 incorrect.
+p0: b1+b2+b3+b4+b5+b6+b7 = 0+1+1+0+1+1+1 = 1 incorrect.
+Error in position: 5
+Corrected bitstring: 0 0 1 1 0 0 1 1.
+Decoded bitstring: 1 0 1 1.
+0 1 1 0 1 0 0 1:
+Checking parity bits:
+p1: b3+b5+b7 = 0+0+1 = 1 correct.
+p2: b3+b6+b7 = 0+0+1 = 1 correct.
+p3: b5+b6+b7 = 0+0+1 = 1 correct.
+p0: b1+b2+b3+b4+b5+b6+b7 = 1+1+0+1+0+0+1 = 0 correct.
+No error.
+Decoded bitstring: 0 0 0 1.
+4. Run functions HammingDecode and HammingDecode2 on all data blocks. Please
+include all intermediate steps. The output should be the same as in the previous output (3), but
+on all data blocks.
+5. Combine all of the decoded bitstrings into one sequence. Print it and save it in a txt
+file. Compare it with the with the sequence of bits from assignment 3. Sample output (5):
+Decoded sequence:
 10110101100010…
-5. After these replacements are made, calculate a data compression ratio: number of bits in
-the original text / the number of bits in the compressed text, and average code length
-= ∑ ( frequencyi x code lengthi ) / ∑ ( frequencyi ).
-Note: ASCII uses 1 byte to represent a letter or a punctuation mark.
-Sample output for (5):
-Number of bits in the original text: 128 bits
-Number of bits in the compressed text: 56 bits
-Compression ratio = 2.29
-Average code length = 2.52 bits/symbol
-Submission: please submit the report in Word specifying responsibilities of each team member.
-Add a general description, the screenshots of execution and source code as text. Also, please
-include the Github link. Work together on the assignment using the Github folder.
-Responsibilities should be divided equally between team members. Write down your code as
-clearly as possible and add suitable comments. Submit just one combined report per group. No
-changes in the code should be made after the submission.
-The defence is required to get a grade for the assignment. You need to defend it in class during
-the week 4. I will take out points for the later defence (50%). All members of the team need to
-present during the defence, be able to answer the questions regarding the assignment and the
-lecture, and change the code if requested. I might ask any member of the team to explain or
-change the code.
-It needs to be your own code. You shouldn’t use any additional functions (just the standard
-ones), frameworks or libraries or solutions from the internet.
+Sequence from assignment 3:
+10110101100010…
+They match.
